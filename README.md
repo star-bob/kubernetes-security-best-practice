@@ -163,15 +163,15 @@ A very basic setup consists of a unprivileged and a privileged policy. The unpri
 With AppArmor:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/default.psp.yaml
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/privileged.psp.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/default.psp.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/privileged.psp.yaml
 ```
 
 Without AppArmor:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/default-non-apparmor.psp.yaml
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/privileged.psp.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/default-non-apparmor.psp.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/privileged.psp.yaml
 ```
 
 Pod Security Policies are evaluated based on access to the policy. When multiple policies are available, the pod security policy controller selects policies in the following order:
@@ -185,15 +185,15 @@ In order to use a policy, the requesting user **or** target pod's service accoun
 First we make sure, that any user has access to the *default* policy, which ensures that Pods will be unprivileged by default.
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/default-psp.clusterrolebinding.yaml
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/default-psp.clusterrole.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/default-psp.clusterrolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/default-psp.clusterrole.yaml
 ```
 
 Some Pods in the cluster, especially if *kube-apiserver*, *kube-controller-manager*, *kube-scheduler* or *etcd* are running inside the cluster, need privileged access. To ensure those services will still start after introducing the *PodSecurityPolicy* controller, we need to grant cluster nodes and the legacy kubelet user access to the privileged policy for the *kube-system* namespace. For this to work make sure you've `--authorization-mode=Node,RBAC`.
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/privileged-psp.clusterrole.yaml
-kubectl apply -f https://raw.githubusercontent.com/freach/kubernetes-security-best-practice/master/PSP/privileged-psp-nodes.rolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/privileged-psp.clusterrole.yaml
+kubectl apply -f https://raw.githubusercontent.com/star-bob/kubernetes-security-best-practice/master/PSP/privileged-psp-nodes.rolebinding.yaml
 ```
 
 Your network provider will also need privileged access. Depending on which you're using the used service account is different. For canal you need to create the following role binding.
@@ -271,7 +271,7 @@ If all is fine, the *privileged* deployment should fail to create the Pod.
 
 ### Restrict "docker image pull" :fire:
 
-Docker images are a completely uncontrolled environment. Everyone with access to the Docker socket or Kubernetes API can pull any image they like. Because of that many Kubernetes clusters secretly became Bitcoin miners, because of infected Docker images or Kubernetes security issues. The Docker plugin [Docker Image policy plugin](https://github.com/freach/docker-image-policy-plugin) will help you with that problem. The plugin hooks into the internal Docker API and enforces a set of black and white list rules to restrict what images can be pulled.
+Docker images are a completely uncontrolled environment. Everyone with access to the Docker socket or Kubernetes API can pull any image they like. Because of that many Kubernetes clusters secretly became Bitcoin miners, because of infected Docker images or Kubernetes security issues. The Docker plugin [Docker Image policy plugin](https://github.com/star-bob/docker-image-policy-plugin) will help you with that problem. The plugin hooks into the internal Docker API and enforces a set of black and white list rules to restrict what images can be pulled.
 
 Ultimately Docker is pulling an image, so securing Docker is considered a good approach but alternatively Kubernetes also provides a way. The *AdmissionController* provides the [ImagePolicyWebhook](https://kubernetes.io/docs/admin/admission-controllers/#imagepolicywebhook) through which a provided web service can intercept image pulls.
 
@@ -313,8 +313,6 @@ The Kubernetes project itself also has some notes on how to secure a cluster. Se
 
 * [kops](kops.md)
 
-## Author
 
-* [Simon Pirschel](https://aboutsimon.com/) - Kubernetes Consultant & DevOps Specialist
 
 Thanks to all the contributors to this guide assuring good quality.
